@@ -1,2 +1,8 @@
 <p>first-form works!</p>
-{{ exampleInput }}
+
+<div *ngIf="exampleStateForComponent.id; else loadingMessage">
+  {{ exampleStateForComponent.id }}
+  {{ exampleStateForComponent.name }}
+</div>
+
+<ng-template #loadingMessage>Данные отсутствуют</ng-template>

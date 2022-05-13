@@ -1,20 +1,15 @@
-import {Component, Input, OnInit, Optional, SkipSelf} from '@angular/core';
-import {FormDataService} from "../../../services/form-data.service";
+import {Component, Optional, SkipSelf} from '@angular/core';
+import {FirstFormStateService} from "../../../services/first-form-state.service";
+import {BaseFormComponent} from "../base-form.component";
+import {FirstDataModel} from "../../../models/first-data.model";
 
 @Component({
   selector: 'app-first-form',
   templateUrl: './first-form.component.html',
   styleUrls: ['./first-form.component.scss'],
 })
-export class FirstFormComponent implements OnInit {
-  @Input()
-  public exampleInput = '';
-
-  constructor(@Optional() @SkipSelf() private readonly formDataService: FormDataService) {
+export class FirstFormComponent extends BaseFormComponent<FirstDataModel> {
+  constructor(@Optional() @SkipSelf() protected readonly state: FirstFormStateService) {
+    super(state);
   }
-
-  ngOnInit(): void {
-    this.formDataService?.firstDataComponent$.subscribe((data) => this.exampleInput = data);
-  }
-
 }

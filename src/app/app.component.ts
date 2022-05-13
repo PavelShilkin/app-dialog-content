@@ -4,6 +4,12 @@ import {DialogComponentDataConfigModel} from "../models/dialog-component-data-co
 import {DialogComponent, FirstComponentConfig, SecondComponentConfig} from "../components/dialog/dialog.component";
 import {FirstFormComponent} from "../components/forms/first-form/first-form.component";
 import {SecondFormComponent} from "../components/forms/second-form/second-form.component";
+import {FetchService} from "../services/fetch.service";
+import {FirstDataModel} from "../models/first-data.model";
+import {FirstFormStateService} from "../services/first-form-state.service";
+import {SecondFormStateService} from "../services/second-form-state.service";
+import {forkJoin} from "rxjs";
+import {SecondDataModel} from "../models/second-data.model";
 
 export type FirstDialogType = DialogComponentDataConfigModel<DialogComponent, {
   firstComponentData: FirstComponentConfig,
@@ -15,11 +21,11 @@ const firstDialogConfig: FirstDialogType = {
   configData: {
     firstComponentData: {
       componentType: FirstFormComponent,
-      exampleInput: 'Hello from FirstFormComponent =) данные из Dialog'
+      exampleState: {id: 123, name: 'JUK'}
     },
     secondComponentData: {
       componentType: SecondFormComponent,
-      exampleArray: [{title: '1'}, {title: '2'}, {title: '3'}, {title: 'данные из Dialog'}]
+      exampleState: {id: 321, title: 'KUJ'}
     }
   }
 }
@@ -31,10 +37,23 @@ const firstDialogConfig: FirstDialogType = {
 })
 export class AppComponent {
 
-  constructor(private readonly dialogService: DialogOpenerService) {
+  constructor(private readonly dialogService: DialogOpenerService,
+              private readonly fetchService: FetchService,
+              private readonly firstService: FirstFormStateService,
+              private readonly secondService: SecondFormStateService) {
   }
 
   public openDialog(): void {
+    this.fetchData();
     this.dialogService.openDialog(firstDialogConfig);
+  }
+
+  private fetchData(): void {
+    // эмулируем параллельные запросы для заполнения всей формы если это необходимо
+    forkJoin<[FirstDataModel, SecondDataModel]>([this.fetchService.getFirstData(),
+      this.fetchService.getSecondData()]).subscribe(([fRes, sRes]) => {
+      this.firstService.updateState(fRes);
+      this.secondService.updateState(sRes);
+    })
   }
 }

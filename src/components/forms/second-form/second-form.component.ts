@@ -1,20 +1,17 @@
-import {Component, Input, OnInit, Optional, SkipSelf} from '@angular/core';
-import {FormDataService} from "../../../services/form-data.service";
+import {Component, Optional, SkipSelf} from '@angular/core';
+import {BaseFormComponent} from "../base-form.component";
+import {SecondDataModel} from "../../../models/second-data.model";
+import {SecondFormStateService} from "../../../services/second-form-state.service";
 
 @Component({
   selector: 'app-second-form',
   templateUrl: './second-form.component.html',
   styleUrls: ['./second-form.component.scss']
 })
-export class SecondFormComponent implements OnInit {
-  @Input()
-  public exampleArray: Array<{ title: string }> = [];
+export class SecondFormComponent extends BaseFormComponent<SecondDataModel> {
 
-  constructor(@Optional() @SkipSelf() private readonly formDataService: FormDataService) {
-  }
-
-  ngOnInit(): void {
-    // this.formDataService?.secondDataComponent$.subscribe((data) => this.exampleArray = data);
+  constructor(@Optional() @SkipSelf() protected readonly state: SecondFormStateService) {
+    super(state);
   }
 
 }

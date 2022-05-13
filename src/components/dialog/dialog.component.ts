@@ -8,19 +8,18 @@ import {
 import {DynamicDialogConfig} from "primeng/dynamicdialog";
 import {FirstFormComponent} from "../forms/first-form/first-form.component";
 import {SecondFormComponent} from "../forms/second-form/second-form.component";
-import {FirstDialogType} from "../../app/app.component";
+import {FirstDataModel} from "../../models/first-data.model";
+import {SecondDataModel} from "../../models/second-data.model";
+import {ComponentCreatorsService} from "../../services/component-creators.service";
 
 
-export interface FirstComponentConfig {
-  componentType: Type<FirstFormComponent>,
-  exampleInput: string
+export interface ComponentConfig<C, S> {
+  componentType: Type<C>,
+  exampleState: S,
 }
 
-
-export interface SecondComponentConfig {
-  componentType: Type<SecondFormComponent>,
-  exampleArray: Array<{ title: string }>
-}
+export type FirstComponentConfig = ComponentConfig<FirstFormComponent, FirstDataModel>;
+export type SecondComponentConfig = ComponentConfig<SecondFormComponent, SecondDataModel>
 
 @Component({
   selector: 'app-dialog',
@@ -34,28 +33,27 @@ export class DialogComponent implements OnInit {
   @ViewChild('secondForm', {static: true, read: ViewContainerRef})
   public readonly secondForm!: ViewContainerRef;
 
-  constructor(private readonly dialogConfig: DynamicDialogConfig) {
+  constructor(private readonly dialogConfig: DynamicDialogConfig,
+              private readonly componentCreator: ComponentCreatorsService) {
   }
 
   ngOnInit(): void {
     const configData = this.dialogConfig.data;
-    this.createComponent(configData.firstComponentData, configData.secondComponentData);
+    this.createFormComponents(configData.firstComponentData, configData.secondComponentData);
   }
 
-  private createComponent(firstData: FirstComponentConfig,
+  private createFormComponents(firstData: FirstComponentConfig,
                           secondData: SecondComponentConfig): void {
     this.createFirstForm(firstData);
     this.createSecondForm(secondData);
   }
 
   private createFirstForm(firstData: FirstComponentConfig): void {
-    const factory = this.firstForm.createComponent<FirstFormComponent>(firstData.componentType);
-    factory.instance.exampleInput = firstData.exampleInput;
+    this.componentCreator.createComponentForm(firstData, this.firstForm);
   }
 
   private createSecondForm(secondData: SecondComponentConfig): void {
-    const factory = this.secondForm.createComponent(secondData.componentType);
-    factory.instance.exampleArray = secondData.exampleArray;
+    this.componentCreator.createComponentForm(secondData, this.secondForm);
   }
 
 }
