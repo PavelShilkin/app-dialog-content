@@ -1,6 +1,6 @@
 import {BehaviorSubject, Observable} from "rxjs";
 
-export abstract class BaseFormState<T> {
+export abstract class BaseFormStateService<T> {
   private stateValue$!: BehaviorSubject<T>;
 
   public readonly state$!: Observable<T>;

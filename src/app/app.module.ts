@@ -13,6 +13,7 @@ import {BaseFormComponent} from "../components/forms/base-form.component";
 import {FetchService} from "../services/fetch.service";
 import {SecondFormStateService} from "../services/second-form-state.service";
 import {ComponentCreatorsService} from "../services/component-creators.service";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {ComponentCreatorsService} from "../services/component-creators.service";
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ButtonModule
+    ButtonModule,
+    ReactiveFormsModule
   ],
   providers: [
     DialogService,
